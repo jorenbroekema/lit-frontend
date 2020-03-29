@@ -11,8 +11,5 @@
   "license": "ISC",
   "devDependencies": {
     "es-dev-server": "^1.40.0"
-  },
-  "dependencies": {
-    "lit-element": "^2.2.1"
   }
 }
