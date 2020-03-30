@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "es-dev-server --node-resolve --watch --open"
+    "start": "es-dev-server --node-resolve --watch --open --port 8000"
   },
   "keywords": [],
   "author": "",

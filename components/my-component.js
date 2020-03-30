@@ -8,11 +8,6 @@ import { classMap } from 'https://unpkg.com/lit-html@^1.2.1/directives/class-map
 class MyComponent extends LitElement {
   static get properties() {
     return {
-      employeeId: {
-        type: Number,
-        reflect: true,
-        attribute: 'employee-id',
-      },
       employeesData: {
         type: Array,
       },
@@ -106,7 +101,13 @@ class MyComponent extends LitElement {
   async fetchEmployees() {
     const response = await fetch('../mock-data/employees.json');
     if (response.status === 200) {
-      const { employees } = await response.json();
+      const result = await response.json();
+      const employees = result.employees;
+
+      this.employeesData = employees;
+
+      const newArr = [1, 2, 3].map(num => num + 1);
+      console.log(newArr); // [2, 3, 4];
 
       this.employeesData = employees.map(employee => {
         const serializedDate = this.serializeDate(employee.workingFrom);
@@ -125,41 +126,55 @@ class MyComponent extends LitElement {
     };
   }
 
+  // ternary operator
+
+  ternary() {
+    return this.name === 'Joren'
+      ? html`
+          Yup
+        `
+      : html`
+          Nope
+        `;
+  }
+
+  employeeTemplate() {
+    return html`
+      ${this.employeesData.map(
+        employee => html`
+          <tr class="row">
+            <td class="column__image">
+              <div class="image-container">
+                <img
+                  src="../assets/images/${employee.name.split(' ')[0]}.jpg"
+                />
+              </div>
+            </td>
+            <td class="column__name">${employee.name}</td>
+            <td class="column__client">${employee.client}</td>
+            <td class="column__working-from">
+              ${employee.workingFrom}
+            </td>
+            <td class="column__hours">${employee.hours} hours</td>
+            <td
+              class="column__status ${classMap(
+                this.statusClass(employee.status), // { className: true | false }
+              )}"
+            >
+              <div class="status__graphic"></div>
+            </td>
+          </tr>
+        `,
+      )}
+    `;
+  }
+
   render() {
     return html`
       <table>
         <tbody>
           ${this.employeesData
-            ? html`
-                ${this.employeesData.map(
-                  employee => html`
-                    <tr class="row">
-                      <td class="column__image">
-                        <div class="image-container">
-                          <img
-                            src="../assets/images/${employee.name.split(
-                              ' ',
-                            )[0]}.jpg"
-                          />
-                        </div>
-                      </td>
-                      <td class="column__name">${employee.name}</td>
-                      <td class="column__client">${employee.client}</td>
-                      <td class="column__working-from">
-                        ${employee.workingFrom}
-                      </td>
-                      <td class="column__hours">${employee.hours} hours</td>
-                      <td
-                        class="column__status ${classMap(
-                          this.statusClass(employee.status),
-                        )}"
-                      >
-                        <div class="status__graphic"></div>
-                      </td>
-                    </tr>
-                  `,
-                )}
-              `
+            ? this.employeeTemplate()
             : html`
                 loading...
               `}
